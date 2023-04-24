@@ -7,8 +7,20 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState('How is the weather in The Hague?');
+  const [url, setUrl] = useState(encodeURI('https://www.google.com/search?q=Weather The Hague'));
   const [result, setResult] = useState('');
   const [error, setError] = useState('');
+
+  const updateQuery = (event: FormEvent) => {
+    const target = event.target as HTMLInputElement;
+    setQuery(target.value);
+  }
+
+  const updateURL = (event: FormEvent) => {
+    const target = event.target as HTMLInputElement;
+    setUrl(target.value);
+  }
 
   const handleSubmit = async (event: FormEvent) => {
     // Stop the form from submitting and refreshing the page.
@@ -22,10 +34,10 @@ export default function Home() {
     const form = event.target as HTMLFormElement
 
     // Get data from the form.
-    const data = {'product': form.product.value as string}
+    const data = {'query': query as string, 'url': url as string}
 
     // Send the form data to our API and get a response.
-    const response = await fetch('/api/ex1', {
+    const response = await fetch('/api/ex4', {
       // Body of the request is the JSON data we created above.
       body: JSON.stringify(data),
       // Tell the server we're sending JSON.
@@ -58,9 +70,12 @@ export default function Home() {
       <main className={`${styles.main} ${inter.className}`}>
         <div className={styles.card}>
           <form onSubmit={handleSubmit}>
-            <div>Enter a description of a product, e.g. &quot;colorful socks&quot;</div>
+            <div>Enter a question and the URL of a website that might contain the answer.</div>
             <div>
-              <input className={styles.input} type="text" id="product" name="product" required />
+              <input className={styles.input} type="text" id="query" name="query" placeholder='Question' value={query} onChange={updateQuery} required />
+            </div>
+            <div>
+              <input className={styles.input} type="text" id="url" name="url" placeholder='URL' value={url} onChange={updateURL} required />
             </div>
             <div>
               <button
